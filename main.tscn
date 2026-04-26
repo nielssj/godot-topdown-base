@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://cv6d4b8kdf7ai"]
+[gd_scene format=3 uid="uid://cv6d4b8kdf7ai"]
 
 [ext_resource type="PackedScene" uid="uid://by7ldkuod88y8" path="res://levels/level_1.tscn" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://bldrnvf6vxgv4" path="res://entities/characters/Player.tscn" id="2_0xm2m"]
@@ -15,21 +15,21 @@ background_mode = 2
 sky = SubResource("Sky_0xm2m")
 tonemap_mode = 2
 
-[node name="Main" type="Node3D"]
+[node name="Main" type="Node3D" unique_id=1623812876]
 
-[node name="Common" type="Node3D" parent="."]
+[node name="Common" type="Node3D" parent="." unique_id=313421130]
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Common"]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Common" unique_id=29769115]
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
 shadow_enabled = true
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="Common"]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Common" unique_id=679460852]
 environment = SubResource("Environment_h2yge")
 
-[node name="Camera3D" type="Camera3D" parent="Common"]
+[node name="Camera3D" type="Camera3D" parent="Common" unique_id=2096814078]
 transform = Transform3D(-4.37114e-08, -0.707107, 0.707107, 0, 0.707107, 0.707107, -1, 3.09086e-08, -3.09086e-08, 3.557, 4.5, 1)
 
-[node name="Level1" parent="." instance=ExtResource("1_ig7tw")]
+[node name="Level1" parent="." unique_id=379026618 instance=ExtResource("1_ig7tw")]
 
-[node name="Player" parent="." instance=ExtResource("2_0xm2m")]
+[node name="Player" parent="." unique_id=99034440 instance=ExtResource("2_0xm2m")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -2, 0, 2)
