@@ -19,6 +19,10 @@ run/main_scene="uid://cv6d4b8kdf7ai"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/gut/plugin.cfg")
+
 [input]
 
 move_left={
