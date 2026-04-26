@@ -6,6 +6,7 @@ extends Node3D
 @export var pool_size: int = 10
 @export var projectile_speed: float = 20.0
 @export var projectile_lifetime: float = 3.0
+@export var projectile_damage: float = 1.0
 
 var _pool: Array[Projectile] = []
 var _cooldown: float = 0.0
@@ -39,7 +40,7 @@ func fire() -> bool:
 	var pos := global_position
 	for p in _pool:
 		if not p.is_active():
-			p.activate(pos, dir, projectile_speed, projectile_lifetime)
+			p.activate(pos, dir, projectile_speed, projectile_lifetime, projectile_damage)
 			return true
 	return false
 
