@@ -24,7 +24,7 @@ func _physics_process(delta):
 		# Turn player towards current move direction
 		if direction != Vector3.ZERO:
 			direction = direction.normalized()
-			mesh.look_at(position - direction, Vector3.UP)
+			mesh.look_at(position + direction, Vector3.UP)
 			
 		# Ground velocity
 		velocity.x = direction.x * effective_speed

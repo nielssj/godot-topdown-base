@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://entities/weapons/Weapon.gd" id="1_weapon"]
+[ext_resource type="PackedScene" path="res://entities/weapons/Projectile.tscn" id="2_projectile"]
+
+[node name="Weapon" type="Node3D"]
+script = ExtResource("1_weapon")
+projectile_scene = ExtResource("2_projectile")

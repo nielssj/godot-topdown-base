@@ -9,6 +9,16 @@ This file provides guidance to AI agents when working with code in this reposito
 - Run the game: open the project in the Godot editor and press F5, or use `godot --path . scenes/main.tscn` from the CLI
 - No build step required — GDScript is interpreted at runtime
 
+## Testing
+
+Uses the [GUT](https://github.com/bitwes/Gut) (Godot Unit Testing) framework. Test files live in `tests/` and follow the `test_*.gd` naming convention.
+
+Run the full suite from the project root — use the bash executable since PowerShell cannot execute the shell script directly:
+
+```
+bash ./tests/run_tests.sh
+```
+
 ## Project Architecture
 
 This is a 3D top-down game. The main scene (`main.tscn`) composes the game by instancing a level and the player into a shared environment.
