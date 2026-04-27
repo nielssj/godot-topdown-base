@@ -6,14 +6,14 @@
 [sub_resource type="BoxShape3D" id="BoxShape3D_ig7tw"]
 size = Vector3(0.6, 1, 0.5)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ig7tw"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lvjpd"]
 albedo_color = Color(0.152941, 0.490196, 0.631373, 1)
 
 [sub_resource type="PrismMesh" id="PrismMesh_0xm2m"]
-material = SubResource("StandardMaterial3D_ig7tw")
+material = SubResource("StandardMaterial3D_lvjpd")
 size = Vector3(0.6, 0.5, 1)
 
-[node name="Player" type="CharacterBody3D" unique_id=680325347]
+[node name="Player" type="CharacterBody3D" unique_id=680325347 groups=["player"]]
 script = ExtResource("1_7cd6r")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=537992884]

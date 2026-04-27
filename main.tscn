@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://by7ldkuod88y8" path="res://levels/level_1.tscn" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://bldrnvf6vxgv4" path="res://entities/characters/Player.tscn" id="2_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://c3sx6pjjffgd" path="res://entities/characters/NPC.tscn" id="3_1bvp3"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ig7tw"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -27,9 +28,12 @@ shadow_enabled = true
 environment = SubResource("Environment_h2yge")
 
 [node name="Camera3D" type="Camera3D" parent="Common" unique_id=2096814078]
-transform = Transform3D(-4.371139e-08, -0.86602545, 0.49999994, 0, 0.49999994, 0.86602545, -1, 3.7855173e-08, -2.1855689e-08, 1, 4.5, -0.068)
+transform = Transform3D(-4.371139e-08, -0.86602545, 0.49999994, 0, 0.49999994, 0.86602545, -1, 3.7855173e-08, -2.1855692e-08, 2.7023256, 5.0321217, -0.068)
 
 [node name="Level1" parent="." unique_id=379026618 instance=ExtResource("1_ig7tw")]
 
 [node name="Player" parent="." unique_id=99034440 instance=ExtResource("2_0xm2m")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -2, 0, 2)
+
+[node name="NPC" parent="." unique_id=1671086397 instance=ExtResource("3_1bvp3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -3)

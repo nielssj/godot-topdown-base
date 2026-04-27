@@ -1,0 +1,38 @@
+[gd_scene format=3 uid="uid://c3sx6pjjffgd"]
+
+[ext_resource type="Script" uid="uid://dkqhbluwmtxu7" path="res://entities/characters/NPC.gd" id="1_7hsy1"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0xm2m"]
+albedo_color = Color(0.9764706, 0.25490198, 0.26666668, 1)
+metallic = 1.0
+
+[sub_resource type="PrismMesh" id="PrismMesh_h2yge"]
+material = SubResource("StandardMaterial3D_0xm2m")
+size = Vector3(0.5, 0.4, 0.75)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_4sekt"]
+size = Vector3(0.6, 0.75, 0.5)
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_7hsy1"]
+radius = 3.0
+
+[node name="NPC" type="CharacterBody3D" unique_id=1671086397]
+script = ExtResource("1_7hsy1")
+
+[node name="Model" type="Node3D" parent="." unique_id=105136129]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Model" unique_id=1891739258]
+transform = Transform3D(-0.99999994, -8.742277e-08, 3.821371e-15, 0, -4.3711385e-08, -1, 8.742277e-08, -0.99999994, 4.371139e-08, 0, 0.375, 0)
+mesh = SubResource("PrismMesh_h2yge")
+skeleton = NodePath("../../..")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=645852759]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.37457275, 0)
+shape = SubResource("BoxShape3D_4sekt")
+
+[node name="VisionArea" type="Area3D" parent="." unique_id=1137722138]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="VisionArea" unique_id=1973468671]
+shape = SubResource("SphereShape3D_7hsy1")
+
+[connection signal="body_entered" from="VisionArea" to="." method="_on_vision_area_body_entered"]
