@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://biqqslic5soky" path="res://entities/environment/Obstacle.gd" id="1_au88t"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vn7o3"]
-albedo_color = Color(0.976471, 0.254902, 0.266667, 1)
+albedo_color = Color(0.27058825, 0.36078432, 0.20392157, 1)
 metallic = 1.0
 emission = Color(1, 1, 1, 1)
 emission_energy_multiplier = 10.0
@@ -25,7 +25,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Color(0.976471, 0.254902, 0.266667, 1)]
+"values": [Color(0.27058825, 0.36078432, 0.20392157, 1)]
 }
 
 [sub_resource type="Animation" id="Animation_57e5w"]
@@ -40,7 +40,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.26666668, 1),
 "transitions": PackedFloat32Array(2, 0.5, 0.11265649),
 "update": 0,
-"values": [Color(0.976471, 0.254902, 0.266667, 1), Color(0.98, 0.98, 0.98, 1), Color(0.976471, 0.254902, 0.266667, 1)]
+"values": [Color(0.27058825, 0.36078432, 0.20392157, 1), Color(0.98, 0.98, 0.98, 1), Color(0.27058825, 0.36078432, 0.20392157, 1)]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_vn7o3"]
@@ -55,7 +55,7 @@ spread = 104.707
 initial_velocity_max = 54.26
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u44cc"]
-albedo_color = Color(0.76141286, 0.091366194, 0.14540258, 1)
+albedo_color = Color(0.27058825, 0.36078432, 0.20392157, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_f64dj"]
 material = SubResource("StandardMaterial3D_u44cc")
