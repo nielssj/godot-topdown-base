@@ -18,6 +18,7 @@ func after_each():
 
 func test_npc_initialization():
 	assert_not_null(npc, "NPC instance should be created")
+	assert_not_null(npc.weapon, "NPC should have a weapon attached")
 	assert_eq(npc.speed, 3.0, "NPC default speed should be 3.0")
 	assert_eq(npc.state, NPC.State.IDLE, "NPC should start in IDLE state")
 	assert_null(npc.target, "NPC should have no target initially")
@@ -53,3 +54,56 @@ func test_vision_signal_with_non_player_body_is_ignored():
 
 	assert_eq(npc.state, NPC.State.IDLE, "State should remain IDLE for non-player body")
 	assert_null(npc.target, "Target should remain null for non-player body")
+
+
+func test_attack_range_and_resume_chase_range_defaults():
+	assert_eq(npc.attack_range, 2.0, "attack_range default should be 2.0")
+	assert_eq(npc.resume_chase_range, 3.0, "resume_chase_range default should be 3.0")
+
+
+func test_tick_chasing_transitions_to_attacking_when_within_attack_range():
+	var fake_player := Node3D.new()
+	add_child_autofree(fake_player)
+	fake_player.global_position = Vector3(1.5, 0.0, 0.0)  # within default attack_range of 2.0
+	npc.target = fake_player
+	npc.state = NPC.State.CHASING
+
+	npc._tick_chasing()
+
+	assert_eq(npc.state, NPC.State.ATTACKING, "Should transition to ATTACKING when target is within attack_range")
+
+
+func test_tick_chasing_stays_chasing_when_outside_attack_range():
+	var fake_player := Node3D.new()
+	add_child_autofree(fake_player)
+	fake_player.global_position = Vector3(2.5, 0.0, 0.0)  # beyond default attack_range of 2.0
+	npc.target = fake_player
+	npc.state = NPC.State.CHASING
+
+	npc._tick_chasing()
+
+	assert_eq(npc.state, NPC.State.CHASING, "Should remain CHASING when target is beyond attack_range")
+
+
+func test_tick_attacking_transitions_to_chasing_when_beyond_resume_range():
+	var fake_player := Node3D.new()
+	add_child_autofree(fake_player)
+	fake_player.global_position = Vector3(4.0, 0.0, 0.0)  # beyond default resume_chase_range of 3.0
+	npc.target = fake_player
+	npc.state = NPC.State.ATTACKING
+
+	npc._tick_attacking()
+
+	assert_eq(npc.state, NPC.State.CHASING, "Should transition to CHASING when target moves beyond resume_chase_range")
+
+
+func test_tick_attacking_stays_attacking_when_within_resume_range():
+	var fake_player := Node3D.new()
+	add_child_autofree(fake_player)
+	fake_player.global_position = Vector3(1.5, 0.0, 0.0)  # within default resume_chase_range of 3.0
+	npc.target = fake_player
+	npc.state = NPC.State.ATTACKING
+
+	npc._tick_attacking()
+
+	assert_eq(npc.state, NPC.State.ATTACKING, "Should remain ATTACKING when target is within resume_chase_range")
