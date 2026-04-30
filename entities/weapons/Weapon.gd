@@ -2,14 +2,10 @@ class_name Weapon
 extends Node3D
 
 @export var projectile_scene: PackedScene
-@export var fire_rate: float = 1.0
 @export var pool_size: int = 10
-@export var projectile_speed: float = 20.0
-@export var projectile_lifetime: float = 3.0
-@export var projectile_damage: float = 1.0
+@export var fire_mode: FireMode
 
 var _pool: Array[Projectile] = []
-var _cooldown: float = 0.0
 
 func _ready() -> void:
 	_build_pool.call_deferred()
@@ -29,20 +25,13 @@ func _exit_tree() -> void:
 	_pool.clear()
 
 func _physics_process(delta: float) -> void:
-	if _cooldown > 0.0:
-		_cooldown -= delta
+	fire_mode.process(self, delta)
 
-func fire() -> bool:
-	if _cooldown > 0.0:
-		return false
-	var dir := -global_transform.basis.z
-	var pos := global_position
-	for p in _pool:
-		if not p.is_active():
-			p.activate(pos, dir, projectile_speed, projectile_lifetime, projectile_damage)
-			_cooldown = 1.0 / fire_rate
-			return true
-	return false
+func fire_pressed() -> bool:
+	return fire_mode.fire_pressed(self)
+
+func fire_released() -> bool:
+	return fire_mode.fire_released(self)
 
 func get_pool_size() -> int:
 	return _pool.size()

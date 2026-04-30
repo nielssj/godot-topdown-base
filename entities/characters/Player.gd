@@ -37,5 +37,7 @@ func _physics_process(delta):
 		# Move
 		move_and_slide()
 
-		if weapon and Input.is_action_pressed("fire"):
-			weapon.fire()
+		if weapon and Input.is_action_just_pressed("fire"):
+			weapon.fire_pressed()
+		if weapon and Input.is_action_just_released("fire"):
+			weapon.fire_released()

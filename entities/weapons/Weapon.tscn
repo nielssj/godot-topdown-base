@@ -1,8 +1,8 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://cgliocabkij1n"]
 
-[ext_resource type="Script" path="res://entities/weapons/Weapon.gd" id="1_weapon"]
-[ext_resource type="PackedScene" path="res://entities/weapons/Projectile.tscn" id="2_projectile"]
+[ext_resource type="Script" uid="uid://dpbfoxs0srfgq" path="res://entities/weapons/Weapon.gd" id="1_weapon"]
+[ext_resource type="PackedScene" uid="uid://blalfkay5lf0u" path="res://entities/weapons/Projectile.tscn" id="2_projectile"]
 
-[node name="Weapon" type="Node3D"]
+[node name="Weapon" type="Node3D" unique_id=1320248272]
 script = ExtResource("1_weapon")
 projectile_scene = ExtResource("2_projectile")

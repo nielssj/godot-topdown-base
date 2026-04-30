@@ -29,7 +29,7 @@ var state: State = State.IDLE:
 				State.CHASING:
 					pass
 				State.ATTACKING:
-					pass
+					_exit_attacking()
 		# Assign new state
 		state = value
 		# Enter functions (match on NEW state after assignment)
@@ -59,6 +59,13 @@ func _enter_chasing() -> void:
 
 func _enter_attacking() -> void:
 	velocity = Vector3.ZERO
+	if weapon:
+		weapon.fire_pressed()
+
+func _exit_attacking() -> void:
+	velocity = Vector3.ZERO
+	if weapon:
+		weapon.fire_released()
 
 func _tick_chasing() -> void:
 	# Vector from NPC to target, flattened to the horizontal plane
@@ -84,7 +91,7 @@ func _tick_attacking() -> void:
 		state = State.CHASING
 		return
 	if weapon:
-		weapon.fire()
+		weapon.fire_pressed()
 
 func _on_vision_area_body_entered(body: Node3D) -> void:
 	# Start chasing when a player enters the vision area

@@ -1,7 +1,8 @@
 [gd_scene format=3 uid="uid://bldrnvf6vxgv4"]
 
 [ext_resource type="Script" uid="uid://cr3l83yr4sw2j" path="res://entities/characters/Player.gd" id="1_7cd6r"]
-[ext_resource type="PackedScene" path="res://entities/weapons/Weapon.tscn" id="2_weapon"]
+[ext_resource type="PackedScene" uid="uid://cgliocabkij1n" path="res://entities/weapons/Weapon.tscn" id="2_weapon"]
+[ext_resource type="Script" uid="uid://c5ytqwryjvqme" path="res://entities/weapons/fire_mode/SingleFireMode.gd" id="3_32oov"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ig7tw"]
 size = Vector3(0.6, 1, 0.5)
@@ -12,6 +13,10 @@ albedo_color = Color(0.152941, 0.490196, 0.631373, 1)
 [sub_resource type="PrismMesh" id="PrismMesh_0xm2m"]
 material = SubResource("StandardMaterial3D_lvjpd")
 size = Vector3(0.6, 0.5, 1)
+
+[sub_resource type="Resource" id="Resource_32oov"]
+script = ExtResource("3_32oov")
+metadata/_custom_type_script = "uid://c5ytqwryjvqme"
 
 [node name="Player" type="CharacterBody3D" unique_id=680325347 groups=["player"]]
 script = ExtResource("1_7cd6r")
@@ -29,4 +34,4 @@ skeleton = NodePath("../..")
 
 [node name="Weapon" parent="Mesh" unique_id=1780457414 instance=ExtResource("2_weapon")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.705, -0.49199066)
-fire_rate = 3.0
+fire_mode = SubResource("Resource_32oov")

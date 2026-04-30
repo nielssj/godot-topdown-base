@@ -1,7 +1,8 @@
 [gd_scene format=3 uid="uid://c3sx6pjjffgd"]
 
 [ext_resource type="Script" uid="uid://dkqhbluwmtxu7" path="res://entities/characters/NPC.gd" id="1_7hsy1"]
-[ext_resource type="PackedScene" path="res://entities/weapons/Weapon.tscn" id="2_weapon"]
+[ext_resource type="PackedScene" uid="uid://cgliocabkij1n" path="res://entities/weapons/Weapon.tscn" id="2_weapon"]
+[ext_resource type="Script" uid="uid://dfag02jyrk440" path="res://entities/weapons/fire_mode/AutoFireMode.gd" id="3_bpwkg"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0xm2m"]
 albedo_color = Color(0.9764706, 0.25490198, 0.26666668, 1)
@@ -10,6 +11,10 @@ metallic = 1.0
 [sub_resource type="PrismMesh" id="PrismMesh_h2yge"]
 material = SubResource("StandardMaterial3D_0xm2m")
 size = Vector3(0.5, 0.4, 0.75)
+
+[sub_resource type="Resource" id="Resource_j66pq"]
+script = ExtResource("3_bpwkg")
+metadata/_custom_type_script = "uid://dfag02jyrk440"
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4sekt"]
 size = Vector3(0.6, 0.75, 0.5)
@@ -27,9 +32,9 @@ transform = Transform3D(-0.99999994, -8.742277e-08, 3.821371e-15, 0, -4.3711385e
 mesh = SubResource("PrismMesh_h2yge")
 skeleton = NodePath("../../..")
 
-[node name="Weapon" parent="Model" instance=ExtResource("2_weapon")]
+[node name="Weapon" parent="Model" unique_id=749708093 instance=ExtResource("2_weapon")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -0.4)
-fire_rate = 1.5
+fire_mode = SubResource("Resource_j66pq")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=645852759]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.37457275, 0)
