@@ -38,9 +38,17 @@ func test_fire_activates_one_projectile():
 
 func test_pool_exhaustion_returns_false():
 	for i in weapon.pool_size:
+		weapon._cooldown = 0.0
 		var result: bool = weapon.fire()
 		assert_true(result, "fire() call %d should return true" % i)
 	assert_eq(weapon.get_active_count(), weapon.pool_size, "all projectiles should be active")
+	weapon._cooldown = 0.0
 	var exhausted: bool = weapon.fire()
 	assert_false(exhausted, "fire() should return false when pool is exhausted")
 	assert_eq(weapon.get_active_count(), weapon.pool_size, "active count should not change after exhausted fire()")
+
+func test_fire_respects_cooldown():
+	assert_true(weapon.fire(), "first fire should succeed")
+	assert_false(weapon.fire(), "second immediate fire should fail due to cooldown")
+	weapon._cooldown = 0.0
+	assert_true(weapon.fire(), "fire should succeed again after cooldown clears")

@@ -31,16 +31,16 @@ func _exit_tree() -> void:
 func _physics_process(delta: float) -> void:
 	if _cooldown > 0.0:
 		_cooldown -= delta
-	if Input.is_action_pressed("fire") and _cooldown <= 0.0:
-		fire()
-		_cooldown = 1.0 / fire_rate
 
 func fire() -> bool:
+	if _cooldown > 0.0:
+		return false
 	var dir := -global_transform.basis.z
 	var pos := global_position
 	for p in _pool:
 		if not p.is_active():
 			p.activate(pos, dir, projectile_speed, projectile_lifetime, projectile_damage)
+			_cooldown = 1.0 / fire_rate
 			return true
 	return false
 
