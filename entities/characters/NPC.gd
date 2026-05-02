@@ -46,6 +46,11 @@ var state: State = State.IDLE:
 			State.DEAD:
 				_enter_dead()
 
+func _ready() -> void:
+	add_to_group("enemies")
+	animation_player.play("RESET")
+
+
 func _physics_process(_delta: float) -> void:
 	# Delegate per-frame logic to the active state
 	match state:
