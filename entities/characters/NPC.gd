@@ -1,5 +1,5 @@
 class_name NPC
-extends CharacterBody3D
+extends Character
 
 # How fast the NPC moves in meters per second
 @export var speed: float = 3.0
@@ -10,11 +10,14 @@ enum State {
 	IDLE,
 	CHASING,
 	ATTACKING,
+	DEAD,
 }
 
 # Reference to child model node
 @onready var model = $Model
 @onready var weapon: Weapon = get_node_or_null("Model/Weapon")
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
+@onready var collision_shape: CollisionShape3D = $CollisionShape3D
 
 # The node the NPC is currently pursuing
 var target: Node3D = null
@@ -40,6 +43,8 @@ var state: State = State.IDLE:
 				_enter_chasing()
 			State.ATTACKING:
 				_enter_attacking()
+			State.DEAD:
+				_enter_dead()
 
 func _physics_process(_delta: float) -> void:
 	# Delegate per-frame logic to the active state
@@ -50,6 +55,8 @@ func _physics_process(_delta: float) -> void:
 			_tick_chasing()
 		State.ATTACKING:
 			_tick_attacking()
+		State.DEAD:
+			pass
 
 func _enter_idle() -> void:
 	pass
@@ -66,6 +73,12 @@ func _exit_attacking() -> void:
 	velocity = Vector3.ZERO
 	if weapon:
 		weapon.fire_released()
+
+func _enter_dead() -> void:
+	velocity = Vector3.ZERO
+	collision_shape.set_deferred("disabled", true)
+	animation_player.stop()
+	animation_player.play("NPCAnimations/Death")
 
 func _tick_chasing() -> void:
 	# Vector from NPC to target, flattened to the horizontal plane
@@ -94,7 +107,16 @@ func _tick_attacking() -> void:
 		weapon.fire_pressed()
 
 func _on_vision_area_body_entered(body: Node3D) -> void:
-	# Start chasing when a player enters the vision area
+	# Only an idle NPC reacts to vision
+	if state != State.IDLE:
+		return
 	if body.is_in_group("player"):
 		target = body
 		state = State.CHASING
+
+func _on_damage_taken(_amount: int) -> void:
+	animation_player.stop()
+	animation_player.play("NPCAnimations/Pulse")
+
+func _on_died() -> void:
+	state = State.DEAD

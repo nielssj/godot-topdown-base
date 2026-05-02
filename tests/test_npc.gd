@@ -40,7 +40,7 @@ func test_vision_signal_with_player_body_triggers_chase():
 	fake_player.add_to_group("player")
 	add_child_autofree(fake_player)
 
-	npc._on_vision_area_body_entered(fake_player)
+	npc.get_node("VisionArea").body_entered.emit(fake_player)
 
 	assert_eq(npc.state, NPC.State.CHASING, "State should transition to CHASING")
 	assert_eq(npc.target, fake_player, "Target should be set to the entering body")
@@ -50,10 +50,26 @@ func test_vision_signal_with_non_player_body_is_ignored():
 	var non_player := Node3D.new()
 	add_child_autofree(non_player)
 
-	npc._on_vision_area_body_entered(non_player)
+	npc.get_node("VisionArea").body_entered.emit(non_player)
 
 	assert_eq(npc.state, NPC.State.IDLE, "State should remain IDLE for non-player body")
 	assert_null(npc.target, "Target should remain null for non-player body")
+
+
+func test_vision_signal_ignored_when_already_chasing():
+	var first_player := Node3D.new()
+	first_player.add_to_group("player")
+	add_child_autofree(first_player)
+	var second_player := Node3D.new()
+	second_player.add_to_group("player")
+	add_child_autofree(second_player)
+
+	npc.target = first_player
+	npc.state = NPC.State.CHASING
+
+	npc.get_node("VisionArea").body_entered.emit(second_player)
+
+	assert_eq(npc.target, first_player, "Vision callback should not overwrite target outside IDLE")
 
 
 func test_attack_range_and_resume_chase_range_defaults():
@@ -107,3 +123,27 @@ func test_tick_attacking_stays_attacking_when_within_resume_range():
 	npc._tick_attacking()
 
 	assert_eq(npc.state, NPC.State.ATTACKING, "Should remain ATTACKING when target is within resume_chase_range")
+
+
+func test_died_signal_transitions_to_dead():
+	npc.died.emit()
+	assert_eq(npc.state, NPC.State.DEAD, "died signal should transition state to DEAD")
+
+
+func test_enter_dead_zeros_velocity():
+	npc.velocity = Vector3(5.0, 0.0, 0.0)
+	npc.state = NPC.State.DEAD
+	assert_eq(npc.velocity, Vector3.ZERO, "Entering DEAD should zero velocity")
+
+
+func test_dead_npc_ignores_vision():
+	var fake_player := Node3D.new()
+	fake_player.add_to_group("player")
+	add_child_autofree(fake_player)
+
+	npc.state = NPC.State.DEAD
+
+	npc.get_node("VisionArea").body_entered.emit(fake_player)
+
+	assert_eq(npc.state, NPC.State.DEAD, "DEAD NPC should not react to vision")
+	assert_null(npc.target, "DEAD NPC should not acquire a target")

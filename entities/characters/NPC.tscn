@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://dkqhbluwmtxu7" path="res://entities/characters/NPC.gd" id="1_7hsy1"]
 [ext_resource type="PackedScene" uid="uid://cgliocabkij1n" path="res://entities/weapons/Weapon.tscn" id="2_weapon"]
 [ext_resource type="Script" uid="uid://dfag02jyrk440" path="res://entities/weapons/fire_mode/AutoFireMode.gd" id="3_bpwkg"]
+[ext_resource type="AnimationLibrary" uid="uid://8fyxj6edo26i" path="res://entities/characters/npc/NPCAnimations.res" id="4_j66pq"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0xm2m"]
 albedo_color = Color(0.9764706, 0.25490198, 0.26666668, 1)
@@ -17,27 +18,72 @@ script = ExtResource("3_bpwkg")
 metadata/_custom_type_script = "uid://dfag02jyrk440"
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4sekt"]
-size = Vector3(0.6, 0.75, 0.5)
+size = Vector3(0.48703614, 0.75, 0.40014648)
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_7hsy1"]
 radius = 3.0
 
+[sub_resource type="Animation" id="Animation_j66pq"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Model/MeshInstance3D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 0.375, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Model/MeshInstance3D:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(1.5707964, -3.1415925, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Model/MeshInstance3D:mesh:material:albedo_color")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0.9764706, 0.25490198, 0.26666668, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_1cyf0"]
+_data = {
+&"RESET": SubResource("Animation_j66pq")
+}
+
 [node name="NPC" type="CharacterBody3D" unique_id=1671086397]
 script = ExtResource("1_7hsy1")
+health = 3
 
 [node name="Model" type="Node3D" parent="." unique_id=105136129]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Model" unique_id=1891739258]
-transform = Transform3D(-0.99999994, -8.742277e-08, 3.821371e-15, 0, -4.3711385e-08, -1, 8.742277e-08, -0.99999994, 4.371139e-08, 0, 0.375, 0)
+transform = Transform3D(-0.9999999, -1.5099572e-07, 6.6002323e-15, 0, -4.3711363e-08, -0.9999994, 1.5099579e-07, -0.9999994, 4.3711363e-08, 0, 0.375, 0)
 mesh = SubResource("PrismMesh_h2yge")
 skeleton = NodePath("../../..")
 
 [node name="Weapon" parent="Model" unique_id=749708093 instance=ExtResource("2_weapon")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -0.4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -0.4671417)
 fire_mode = SubResource("Resource_j66pq")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=645852759]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.37457275, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0030639619, 0.37457275, 0.002319336)
 shape = SubResource("BoxShape3D_4sekt")
 
 [node name="VisionArea" type="Area3D" parent="." unique_id=1137722138]
@@ -45,4 +91,10 @@ shape = SubResource("BoxShape3D_4sekt")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="VisionArea" unique_id=1973468671]
 shape = SubResource("SphereShape3D_7hsy1")
 
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1412848476]
+libraries/ = SubResource("AnimationLibrary_1cyf0")
+libraries/NPCAnimations = ExtResource("4_j66pq")
+
+[connection signal="damage_taken" from="." to="." method="_on_damage_taken"]
+[connection signal="died" from="." to="." method="_on_died"]
 [connection signal="body_entered" from="VisionArea" to="." method="_on_vision_area_body_entered"]

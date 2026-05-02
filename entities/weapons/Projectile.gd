@@ -41,5 +41,7 @@ func _physics_process(delta: float) -> void:
 func _on_body_entered(_body: Node) -> void:
 	if _body is Obstacle:
 		(_body as Obstacle).damage(1)
+	if _body is Character:
+		(_body as Character).damage(1)
 	if _active:
 		deactivate()

@@ -19,6 +19,10 @@ Run the full suite from the project root — use the bash executable since Power
 bash ./tests/run_tests.sh
 ```
 
+### Testing practices:
+
+ - When a test wants to verify "what happens when signal X fires," prefer `node.signal_name.emit()` over directly invoking the connected handler (`node._on_signal_name()`). The emit-based form also covers the scene's `[connection ...]` wiring; the direct call only tests the method body.
+
 ## Project Architecture
 
 This is a 3D top-down game. The main scene (`main.tscn`) composes the game by instancing a level and the player into a shared environment.

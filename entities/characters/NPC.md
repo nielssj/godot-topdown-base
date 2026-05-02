@@ -10,6 +10,9 @@ stateDiagram-v2
     IDLE --> CHASING : player enters vision area
     CHASING --> ATTACKING : distance ≤ attack_range
     ATTACKING --> CHASING : distance > resume_chase_range
+    IDLE --> DEAD : died signal
+    CHASING --> DEAD : died signal
+    ATTACKING --> DEAD : died signal
 ```
 
 ## States
@@ -19,6 +22,7 @@ stateDiagram-v2
 | `IDLE` | Stationary, waiting for a trigger. |
 | `CHASING` | Moves toward `target` at `speed` m/s, rotating the model to face it each frame. Transitions to `ATTACKING` when within `attack_range`. |
 | `ATTACKING` | Stops moving, faces `target`, and fires the weapon each frame. Transitions back to `CHASING` when `target` moves beyond `resume_chase_range`. |
+| `DEAD` | Terminal. Stops moving, releases the weapon (via the `ATTACKING` exit), plays the death animation, and ignores further vision triggers. |
 
 ## Key properties
 
@@ -30,4 +34,4 @@ stateDiagram-v2
 
 ## How vision works
 
-The vision area is an `Area3D` child node. Its `body_entered` signal is wired to `_on_vision_area_body_entered`, which checks for the `"player"` group and triggers the `IDLE → CHASING` transition.
+The vision area is an `Area3D` child node. Its `body_entered` signal is wired to `_on_vision_area_body_entered`, which only reacts when the NPC is in `IDLE` and the entering body is in the `"player"` group, then triggers the `IDLE → CHASING` transition.
