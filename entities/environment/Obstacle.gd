@@ -1,36 +1,30 @@
 class_name Obstacle
 extends StaticBody3D
 
-
-# How much damage the obstacle is able to sustain without before breaking
 @export var health: int = 4
 
-
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
-@onready var mesh_instance: MeshInstance3D = $MeshInstance3D
 @onready var collision_shape: CollisionShape3D = $CollisionShape3D
-@onready var particles: GPUParticles3D = $GPUParticles3D
-@onready var destroy_timer: Timer = $DestroyTimer
 
-var _exploded: bool = false
-
-
-func _ready() -> void:
-	destroy_timer.timeout.connect(queue_free)
+const DAMAGE_ANIMATION = "ObstacleAnimations/pulse"
+const DEATH_ANIMATION = "ObstacleAnimations/death"
 
 
 func damage(amount: int, _source: Node3D = null) -> void:
-	if _exploded:
+	if health <= 0:
 		return
 	health = health - amount
-	animation_player.play("pulse")
+	animation_player.play(DAMAGE_ANIMATION)
 	if health <= 0:
 		_explode()
 
 
 func _explode() -> void:
-	_exploded = true
-	particles.emitting = true
-	mesh_instance.visible = false
 	collision_shape.set_deferred("disabled", true)
-	destroy_timer.start()
+	animation_player.stop()
+	animation_player.play(DEATH_ANIMATION)
+
+
+func _on_animation_finished(anim_name: StringName) -> void:
+	if anim_name == DEATH_ANIMATION:
+		queue_free()

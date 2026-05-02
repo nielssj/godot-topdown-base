@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dl845h7q7kbo5"]
 
 [ext_resource type="Script" uid="uid://biqqslic5soky" path="res://entities/environment/Obstacle.gd" id="1_au88t"]
+[ext_resource type="AnimationLibrary" uid="uid://de4cv70hmf40" path="res://entities/environment/obstacle/ObstacleAnimations.res" id="2_u44cc"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vn7o3"]
 albedo_color = Color(0.27058825, 0.36078432, 0.20392157, 1)
@@ -12,42 +13,6 @@ emission_energy_multiplier = 10.0
 material = SubResource("StandardMaterial3D_vn7o3")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_57e5w"]
-
-[sub_resource type="Animation" id="Animation_vn7o3"]
-length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("MeshInstance3D:mesh:material:albedo_color")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(0.27058825, 0.36078432, 0.20392157, 1)]
-}
-
-[sub_resource type="Animation" id="Animation_57e5w"]
-resource_name = "pulse"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("MeshInstance3D:mesh:material:albedo_color")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.26666668, 1),
-"transitions": PackedFloat32Array(2, 0.5, 0.11265649),
-"update": 0,
-"values": [Color(0.27058825, 0.36078432, 0.20392157, 1), Color(0.98, 0.98, 0.98, 1), Color(0.27058825, 0.36078432, 0.20392157, 1)]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_vn7o3"]
-_data = {
-&"RESET": SubResource("Animation_vn7o3"),
-&"pulse": SubResource("Animation_57e5w")
-}
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_au88t"]
 direction = Vector3(0.5, 0.5, 0.5)
@@ -72,10 +37,11 @@ skeleton = NodePath("../..")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1983309665]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+visible = false
 shape = SubResource("BoxShape3D_57e5w")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1367977218]
-libraries/ = SubResource("AnimationLibrary_vn7o3")
+libraries/ObstacleAnimations = ExtResource("2_u44cc")
 speed_scale = 3.0
 
 [node name="GPUParticles3D" type="GPUParticles3D" parent="." unique_id=2113721405]
@@ -88,5 +54,4 @@ explosiveness = 1.0
 process_material = SubResource("ParticleProcessMaterial_au88t")
 draw_pass_1 = SubResource("BoxMesh_f64dj")
 
-[node name="DestroyTimer" type="Timer" parent="." unique_id=1937553418]
-one_shot = true
+[connection signal="animation_finished" from="AnimationPlayer" to="." method="_on_animation_finished"]
