@@ -1,16 +1,13 @@
 class_name Player
 extends CharacterBody3D
 
-# How fast the player moves in meters per second
 @export var speed: float = 4.0
-# The downward acceleration when in the air, in meters per second squared
 @export var fall_acceleration: float = 75.0
-# Enable user control
 @export var enable_control: bool = true
 
-# Reference to child mesh node
 @onready var mesh = $Mesh
 @onready var weapon: Weapon = get_node_or_null("Mesh/Weapon")
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
 
 func _physics_process(delta):
 	# Handle movement input only if control is enabled
@@ -37,7 +34,9 @@ func _physics_process(delta):
 		# Move
 		move_and_slide()
 
+		# Trigger weapon
 		if weapon and Input.is_action_just_pressed("fire"):
+			animation_player.play("PlayerAnimations/Casting")
 			weapon.fire_pressed()
 		if weapon and Input.is_action_just_released("fire"):
 			weapon.fire_released()

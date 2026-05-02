@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://cr3l83yr4sw2j" path="res://entities/characters/Player.gd" id="1_7cd6r"]
 [ext_resource type="PackedScene" uid="uid://cgliocabkij1n" path="res://entities/weapons/Weapon.tscn" id="2_weapon"]
 [ext_resource type="Script" uid="uid://c5ytqwryjvqme" path="res://entities/weapons/fire_mode/SingleFireMode.gd" id="3_32oov"]
+[ext_resource type="AnimationLibrary" uid="uid://76yu6vwd3g5" path="res://entities/characters/player/PlayerAnimations.res" id="5_5ep8t"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ig7tw"]
 size = Vector3(0.6, 1, 0.5)
@@ -28,10 +29,13 @@ shape = SubResource("BoxShape3D_ig7tw")
 [node name="Mesh" type="Node3D" parent="." unique_id=1046341506]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Mesh" unique_id=2126476547]
-transform = Transform3D(-0.99999994, -8.742277e-08, 3.821371e-15, 0, -4.3711385e-08, -1, 8.742277e-08, -0.99999994, 4.371139e-08, 0, 0.5, 0)
+transform = Transform3D(-0.99999994, 8.742277e-08, -3.821371e-15, 0, -4.3711385e-08, -1, -8.742277e-08, -0.99999994, 4.371139e-08, 0, 0.5, 0)
 mesh = SubResource("PrismMesh_0xm2m")
 skeleton = NodePath("../..")
 
 [node name="Weapon" parent="Mesh" unique_id=1780457414 instance=ExtResource("2_weapon")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.705, -0.49199066)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.705, -0.525)
 fire_mode = SubResource("Resource_32oov")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=516688891]
+libraries/PlayerAnimations = ExtResource("5_5ep8t")
