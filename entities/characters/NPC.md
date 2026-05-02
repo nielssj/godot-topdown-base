@@ -8,6 +8,9 @@
 stateDiagram-v2
     [*] --> IDLE
     IDLE --> CHASING : player enters vision area
+    IDLE --> CHASING : damage_taken with source
+    CHASING --> CHASING : damage_taken with source (retargets)
+    ATTACKING --> CHASING : damage_taken with source (retargets)
     CHASING --> ATTACKING : distance ≤ attack_range
     ATTACKING --> CHASING : distance > resume_chase_range
     IDLE --> DEAD : died signal
@@ -32,6 +35,8 @@ stateDiagram-v2
 - `target` — the `Node3D` being pursued; set when the player enters the vision area.
 - `weapon` — optional `Weapon` child node at `Model/Weapon`; called via `weapon.fire()` each frame while attacking.
 
-## How vision works
+## How the NPC acquires a target
 
-The vision area is an `Area3D` child node. Its `body_entered` signal is wired to `_on_vision_area_body_entered`, which only reacts when the NPC is in `IDLE` and the entering body is in the `"player"` group, then triggers the `IDLE → CHASING` transition.
+**Vision:** An `Area3D` child node fires `body_entered` → `_on_vision_area_body_entered`. Only reacts when the NPC is in `IDLE` and the body is in the `"player"` group; sets `target` and triggers `IDLE → CHASING`.
+
+**Damage:** When the NPC takes damage from a source (a `Node3D` passed through `damage_taken`), it sets `target = source` and transitions to `CHASING` (from any non-`DEAD` state). Damage with no source (`null`) is ignored for targeting — the NPC plays the pulse animation but does not move.

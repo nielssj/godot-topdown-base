@@ -114,7 +114,10 @@ func _on_vision_area_body_entered(body: Node3D) -> void:
 		target = body
 		state = State.CHASING
 
-func _on_damage_taken(_amount: int) -> void:
+func _on_damage_taken(_amount: int, source: Node3D) -> void:
+	if source != null and state != State.DEAD:
+		target = source
+		state = State.CHASING
 	animation_player.stop()
 	animation_player.play("NPCAnimations/Pulse")
 

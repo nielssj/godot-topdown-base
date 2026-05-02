@@ -147,3 +147,20 @@ func test_dead_npc_ignores_vision():
 
 	assert_eq(npc.state, NPC.State.DEAD, "DEAD NPC should not react to vision")
 	assert_null(npc.target, "DEAD NPC should not acquire a target")
+
+
+func test_damage_taken_with_source_starts_chasing_source():
+	var attacker := Node3D.new()
+	add_child_autofree(attacker)
+
+	npc.damage_taken.emit(1, attacker)
+
+	assert_eq(npc.state, NPC.State.CHASING, "NPC should start chasing on damage with a source")
+	assert_eq(npc.target, attacker, "NPC target should be set to the damage source")
+
+
+func test_damage_taken_with_null_source_stays_idle():
+	npc.damage_taken.emit(1, null)
+
+	assert_eq(npc.state, NPC.State.IDLE, "NPC should not start chasing when damage source is null")
+	assert_null(npc.target, "Target should remain null when damage source is null")

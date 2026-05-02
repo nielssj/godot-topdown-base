@@ -59,3 +59,16 @@ func test_single_fire_mode_integration_activates_projectile():
 	weapon = await _make_weapon(SingleFireModeScript.new())
 	assert_true(weapon.fire_pressed(), "fire_pressed should succeed when pool has an inactive projectile")
 	assert_eq(weapon.get_active_count(), 1, "active count should be 1 after one fire_pressed()")
+
+func test_find_source_resolves_to_character_body_ancestor():
+	var owner := CharacterBody3D.new()
+	add_child_autofree(owner)
+	weapon = WeaponScene.instantiate()
+	weapon.fire_mode = StubFireMode.new()
+	owner.add_child(weapon)
+	await get_tree().process_frame
+	assert_eq(weapon._find_source(), owner, "_find_source should return the nearest CharacterBody3D ancestor")
+
+func test_find_source_returns_null_when_no_character_body_ancestor():
+	weapon = await _make_weapon(StubFireMode.new())
+	assert_null(weapon._find_source(), "_find_source should return null when no CharacterBody3D ancestor exists")

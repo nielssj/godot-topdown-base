@@ -19,7 +19,7 @@ func _ready() -> void:
 	destroy_timer.timeout.connect(queue_free)
 
 
-func damage(amount: int) -> void:
+func damage(amount: int, _source: Node3D = null) -> void:
 	if _exploded:
 		return
 	health = health - amount

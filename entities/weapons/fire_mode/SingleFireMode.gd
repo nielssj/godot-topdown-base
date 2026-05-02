@@ -10,6 +10,6 @@ func fire_pressed(weapon: Weapon) -> bool:
 	var pos := weapon.global_position
 	for p in weapon._pool:
 		if not p.is_active():
-			p.activate(pos, dir, projectile_speed, projectile_lifetime, projectile_damage)
+			p.activate(pos, dir, projectile_speed, projectile_lifetime, projectile_damage, weapon.source)
 			return true
 	return false

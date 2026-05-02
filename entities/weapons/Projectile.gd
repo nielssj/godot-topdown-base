@@ -6,6 +6,7 @@ var _lifetime: float = 0.0
 var _max_lifetime: float = 0.0
 var _damage: float = 0.0
 var _active: bool = false
+var _source: Node3D = null
 
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
@@ -14,12 +15,13 @@ func _ready() -> void:
 func is_active() -> bool:
 	return _active
 
-func activate(pos: Vector3, dir: Vector3, speed: float, max_lifetime: float, damage: float) -> void:
+func activate(pos: Vector3, dir: Vector3, speed: float, max_lifetime: float, damage: float, source: Node3D = null) -> void:
 	global_position = pos
 	_velocity = dir.normalized() * speed
 	_lifetime = 0.0
 	_max_lifetime = max_lifetime
 	_damage = damage
+	_source = source
 	_active = true
 	visible = true
 	monitoring = true
@@ -40,8 +42,8 @@ func _physics_process(delta: float) -> void:
 
 func _on_body_entered(_body: Node) -> void:
 	if _body is Obstacle:
-		(_body as Obstacle).damage(1)
+		(_body as Obstacle).damage(1, _source)
 	if _body is Character:
-		(_body as Character).damage(1)
+		(_body as Character).damage(1, _source)
 	if _active:
 		deactivate()

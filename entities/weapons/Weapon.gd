@@ -6,9 +6,19 @@ extends Node3D
 @export var fire_mode: FireMode
 
 var _pool: Array[Projectile] = []
+var source: Node3D = null
 
 func _ready() -> void:
+	source = _find_source()
 	_build_pool.call_deferred()
+
+func _find_source() -> Node3D:
+	var n := get_parent()
+	while n != null:
+		if n is CharacterBody3D:
+			return n
+		n = n.get_parent()
+	return null
 
 func _build_pool() -> void:
 	var parent: Node = get_tree().current_scene if get_tree().current_scene else get_tree().root

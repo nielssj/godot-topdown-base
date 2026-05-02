@@ -16,12 +16,14 @@ func after_each():
 
 func test_damage_reduces_health_and_emits_damage_taken():
 	character.health = 10
+	var source := Node3D.new()
+	add_child_autofree(source)
 	watch_signals(character)
 
-	character.damage(3)
+	character.damage(3, source)
 
 	assert_eq(character.health, 7, "Health should be reduced by damage amount")
-	assert_signal_emitted_with_parameters(character, "damage_taken", [3])
+	assert_signal_emitted_with_parameters(character, "damage_taken", [3, source])
 	assert_false(character.is_dead, "Should not be dead after partial damage")
 
 

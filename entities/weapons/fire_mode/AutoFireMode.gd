@@ -28,6 +28,6 @@ func process(weapon: Weapon, delta: float) -> void:
 	var pos := weapon.global_position
 	for p in weapon._pool:
 		if not p.is_active():
-			p.activate(pos, dir, projectile_speed, projectile_lifetime, projectile_damage)
+			p.activate(pos, dir, projectile_speed, projectile_lifetime, projectile_damage, weapon.source)
 			_cooldown = 1.0 / fire_rate
 			return
