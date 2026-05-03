@@ -15,6 +15,7 @@ size = Vector3(0.5, 0.4, 0.75)
 
 [sub_resource type="Resource" id="Resource_j66pq"]
 script = ExtResource("3_bpwkg")
+resource_local_to_scene = true
 metadata/_custom_type_script = "uid://dfag02jyrk440"
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4sekt"]
