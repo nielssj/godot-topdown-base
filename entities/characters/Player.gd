@@ -1,5 +1,5 @@
 class_name Player
-extends CharacterBody3D
+extends Character
 
 @export var speed: float = 4.0
 @export var fall_acceleration: float = 75.0
@@ -8,6 +8,9 @@ extends CharacterBody3D
 @onready var mesh = $Mesh
 @onready var weapon: Weapon = get_node_or_null("Mesh/Weapon")
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
+
+const CASTING_ANIMATION = "PlayerAnimations/Casting"
+const DAMAGE_ANIMATION = "PlayerAnimations/Pulse"
 
 func _physics_process(delta):
 	# Handle movement input only if control is enabled
@@ -36,7 +39,12 @@ func _physics_process(delta):
 
 		# Trigger weapon
 		if weapon and Input.is_action_just_pressed("fire"):
-			animation_player.play("PlayerAnimations/Casting")
+			animation_player.play(CASTING_ANIMATION)
 			weapon.fire_pressed()
 		if weapon and Input.is_action_just_released("fire"):
 			weapon.fire_released()
+
+
+func _on_damage_taken(_amount: int, _source: Node3D) -> void:
+	animation_player.stop()
+	animation_player.play(DAMAGE_ANIMATION)

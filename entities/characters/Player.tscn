@@ -39,3 +39,5 @@ fire_mode = SubResource("Resource_32oov")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=516688891]
 libraries/PlayerAnimations = ExtResource("5_5ep8t")
+
+[connection signal="damage_taken" from="." to="." method="_on_damage_taken"]
