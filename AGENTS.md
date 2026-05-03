@@ -22,6 +22,7 @@ bash ./tests/run_tests.sh
 ### Testing practices:
 
  - When a test wants to verify "what happens when signal X fires," prefer `node.signal_name.emit()` over directly invoking the connected handler (`node._on_signal_name()`). The emit-based form also covers the scene's `[connection ...]` wiring; the direct call only tests the method body.
+ - When asserting signals, pass the signal directly as a single argument: `assert_signal_emitted(node.signal_name)` — not the two-argument string form `assert_signal_emitted(node, "signal_name")`. If the script under test does not declare signals top-level, it should, add the declaration.
 
 ## Project Architecture
 

@@ -43,3 +43,5 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -3)
 
 [node name="MainHUD" parent="." unique_id=237475945 instance=ExtResource("5_7mycd")]
 visible = false
+
+[connection signal="died" from="Player" to="." method="_on_player_died"]

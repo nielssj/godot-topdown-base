@@ -1,19 +1,14 @@
 extends GutTest
 
 const NpcScene = preload("res://entities/characters/NPC.tscn")
-const HudScene = preload("res://ui/hud.tscn")
 const MainScript = preload("res://main.gd")
 
 var main_node: Node3D
-var hud: HUD
 
 
 func before_each() -> void:
-	hud = HudScene.instantiate()
-	hud.name = "MainHUD"
 	main_node = Node3D.new()
 	main_node.set_script(MainScript)
-	main_node.add_child(hud)
 	add_child_autofree(main_node)
 
 
@@ -44,19 +39,26 @@ func test_mix_of_alive_and_dead_is_not_all_dead() -> void:
 	assert_false(main_node._are_all_enemies_dead())
 
 
-func test_last_enemy_death_reveals_win_hud() -> void:
+func test_last_enemy_death_emits_game_won() -> void:
 	var npc := _add_npc()
 	npc.died.connect(main_node._on_enemy_died)
+	watch_signals(main_node)
 	npc.is_dead = true
 	npc.died.emit()
-	assert_true(hud.visible)
-	assert_true(hud.win_message.visible)
+	assert_signal_emitted(main_node.game_won)
 
 
-func test_partial_enemy_death_keeps_hud_hidden() -> void:
+func test_partial_enemy_death_does_not_emit_game_won() -> void:
 	var dead_npc := _add_npc()
 	_add_npc()  # second enemy stays alive
 	dead_npc.died.connect(main_node._on_enemy_died)
+	watch_signals(main_node)
 	dead_npc.is_dead = true
 	dead_npc.died.emit()
-	assert_false(hud.visible)
+	assert_signal_not_emitted(main_node.game_won)
+
+
+func test_player_death_emits_game_lost() -> void:
+	watch_signals(main_node)
+	main_node._on_player_died()
+	assert_signal_emitted(main_node.game_lost)
