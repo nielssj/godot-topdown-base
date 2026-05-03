@@ -33,7 +33,7 @@ func test_damage_to_zero_triggers_explosion():
 	obstacle.damage(4)
 	await get_tree().process_frame
 	assert_eq(obstacle.health, 0, "Health should reach 0")
-	assert_eq(obstacle.animation_player.current_animation, "death", "Death animation should be playing after lethal damage")
+	assert_eq(obstacle.animation_player.current_animation, obstacle.DEATH_ANIMATION, "Death animation should be playing after lethal damage")
 	assert_true(obstacle.collision_shape.disabled, "CollisionShape3D should be disabled")
 
 
@@ -52,5 +52,5 @@ func test_damage_after_explosion_is_ignored():
 func test_death_animation_triggers_queue_free():
 	obstacle.damage(4)
 	assert_false(obstacle.is_queued_for_deletion(), "Obstacle should not be queued for deletion before animation finishes")
-	obstacle.animation_player.animation_finished.emit("death")
+	obstacle.animation_player.animation_finished.emit(obstacle.DEATH_ANIMATION)
 	assert_true(obstacle.is_queued_for_deletion(), "Obstacle should be queued for deletion after death animation finishes")

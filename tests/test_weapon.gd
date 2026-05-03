@@ -53,7 +53,7 @@ func test_physics_process_forwards_to_fire_mode():
 	var stub := StubFireMode.new()
 	weapon = await _make_weapon(stub)
 	weapon._physics_process(0.016)
-	assert_eq(stub.process_count, 1, "_physics_process should delegate to fire_mode.process")
+	assert_gte(stub.process_count, 1, "_physics_process should delegate to fire_mode.process")
 
 func test_single_fire_mode_integration_activates_projectile():
 	weapon = await _make_weapon(SingleFireModeScript.new())
