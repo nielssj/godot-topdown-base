@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://cv6d4b8kdf7ai"]
 
 [ext_resource type="PackedScene" uid="uid://by7ldkuod88y8" path="res://levels/level_1.tscn" id="1_ig7tw"]
-[ext_resource type="Script" uid="uid://fymjnssjlege" path="res://main.gd" id="1_lquwl"]
 [ext_resource type="PackedScene" uid="uid://bldrnvf6vxgv4" path="res://entities/characters/Player.tscn" id="2_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://c3sx6pjjffgd" path="res://entities/characters/NPC.tscn" id="3_1bvp3"]
 [ext_resource type="PackedScene" uid="uid://dsbla086huyuy" path="res://ui/hud.tscn" id="5_7mycd"]
+[ext_resource type="Script" uid="uid://cc37laolqa14i" path="res://core/GameManager.gd" id="6_7mycd"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ig7tw"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -19,7 +19,6 @@ sky = SubResource("Sky_0xm2m")
 tonemap_mode = 2
 
 [node name="Main" type="Node3D" unique_id=1623812876]
-script = ExtResource("1_lquwl")
 
 [node name="Common" type="Node3D" parent="." unique_id=313421130]
 
@@ -41,7 +40,11 @@ transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -2, 0,
 [node name="NPC" parent="." unique_id=1671086397 instance=ExtResource("3_1bvp3")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0, -3)
 
-[node name="MainHUD" parent="." unique_id=237475945 instance=ExtResource("5_7mycd")]
+[node name="MainHUD" parent="." unique_id=237475945 node_paths=PackedStringArray("game_manager") instance=ExtResource("5_7mycd")]
 visible = false
+game_manager = NodePath("../GameManager")
 
-[connection signal="died" from="Player" to="." method="_on_player_died"]
+[node name="GameManager" type="Node" parent="." unique_id=1444003648]
+script = ExtResource("6_7mycd")
+
+[connection signal="died" from="Player" to="GameManager" method="_on_player_died"]

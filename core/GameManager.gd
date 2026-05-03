@@ -1,5 +1,5 @@
-class_name Main
-extends Node3D
+class_name GameManager
+extends Node
 
 signal game_won
 signal game_lost
