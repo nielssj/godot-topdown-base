@@ -1,0 +1,52 @@
+name: Run Tests
+
+on:
+  pull_request:
+    branches: [ main, dev ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+  checks: write
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install Godot
+      run: |
+        wget -q https://github.com/godotengine/godot/releases/download/4.6.2-stable/Godot_v4.6.2-stable_linux.x86_64.zip
+        unzip Godot_v4.6.2-stable_linux.x86_64.zip
+        chmod +x Godot_v4.6.2-stable_linux.x86_64
+        sudo mv Godot_v4.6.2-stable_linux.x86_64 /usr/local/bin/godot
+    
+    - name: Import Project
+      run: godot --headless --editor --quit
+      env:
+        GODOT_PATH: /usr/local/bin/godot
+    
+    - name: Make test script executable
+      run: chmod +x ./tests/run_tests.sh
+
+    - name: Run Tests
+      run: ./tests/run_tests.sh -gjunit_xml_file test_results.xml
+      env:
+        GODOT_PATH: /usr/local/bin/godot
+    
+    - name: Test Report
+      uses: dorny/test-reporter@a43b3a5f7366b97d083190328d2c652e1a8b6aa2 # v3
+      if: ${{ !cancelled() }}
+      with:
+        name: GUT Tests
+        path: test_results.xml
+        reporter: java-junit
+        fail-on-error: true

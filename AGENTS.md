@@ -4,7 +4,7 @@ This file provides guidance to AI agents when working with code in this reposito
 
 ## Engine & Runtime
 
-- **Godot 4.4** project using GDScript
+- **Godot 4.6** project using GDScript
 - Rendering: GL Compatibility (mobile-friendly)
 - Run the game: open the project in the Godot editor and press F5, or use `godot --path . scenes/main.tscn` from the CLI
 - No build step required — GDScript is interpreted at runtime
