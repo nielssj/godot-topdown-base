@@ -1,0 +1,93 @@
+name: Build Godot Game
+
+on:
+  workflow_call:
+    inputs:
+      upload_artifacts:
+        description: 'Whether to upload build artifacts'
+        required: false
+        type: boolean
+        default: false
+      tag_name:
+        description: 'Tag name for release builds (used in file naming)'
+        required: false
+        type: string
+        default: ''
+    outputs:
+      linux_artifact_path:
+        description: 'Path to the Linux build artifact'
+        value: ${{ jobs.build.outputs.linux_artifact_path }}
+      windows_artifact_path:
+        description: 'Path to the Windows build artifact'
+        value: ${{ jobs.build.outputs.windows_artifact_path }}
+
+env:
+  GAME_NAME: godot-topdown-base
+  GODOT_VERSION: 4.6.2
+  GODOT_PATH: /usr/local/bin/godot
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    outputs:
+      linux_artifact_path: ${{ steps.build_paths.outputs.linux_path }}
+      windows_artifact_path: ${{ steps.build_paths.outputs.windows_path }}
+
+    steps:
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+    - name: Install Godot
+      run: |
+        wget -q https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip
+        unzip Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip
+        chmod +x Godot_v${GODOT_VERSION}-stable_linux.x86_64
+        sudo mv Godot_v${GODOT_VERSION}-stable_linux.x86_64 /usr/local/bin/godot
+        rm Godot_v${GODOT_VERSION}-stable_linux.x86_64.zip
+
+    - name: Import Project
+      run: godot --headless --editor --quit
+
+    - name: Setup export templates
+      run: |
+        mkdir -v -p ~/.local/share/godot/export_templates
+        wget -q https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
+        unzip Godot_v${GODOT_VERSION}-stable_export_templates.tpz
+        mv templates ~/.local/share/godot/export_templates/${GODOT_VERSION}.stable
+        rm Godot_v${GODOT_VERSION}-stable_export_templates.tpz
+
+    - name: Export Linux Build
+      env:
+        RELEASE_VERSION: ${{ inputs.tag_name }}
+      run: |
+        chmod +x ./scripts/export_linux.sh
+        ./scripts/export_linux.sh
+
+    - name: Export Windows Build
+      env:
+        RELEASE_VERSION: ${{ inputs.tag_name }}
+      run: |
+        chmod +x ./scripts/export_win.sh
+        ./scripts/export_win.sh
+
+    - name: Set build paths and rename files for release
+      id: build_paths
+      run: |
+        if [ "${{ inputs.tag_name }}" != "" ]; then
+          mv dist/${GAME_NAME}-linux.zip dist/${GAME_NAME}-linux-${{ inputs.tag_name }}.zip
+          mv dist/${GAME_NAME}-win.zip dist/${GAME_NAME}-win-${{ inputs.tag_name }}.zip
+          echo "linux_path=dist/${GAME_NAME}-linux-${{ inputs.tag_name }}.zip" >> $GITHUB_OUTPUT
+          echo "windows_path=dist/${GAME_NAME}-win-${{ inputs.tag_name }}.zip" >> $GITHUB_OUTPUT
+        else
+          echo "linux_path=dist/${GAME_NAME}-linux.zip" >> $GITHUB_OUTPUT
+          echo "windows_path=dist/${GAME_NAME}-win.zip" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Upload build artifacts
+      if: inputs.upload_artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: godot-builds
+        if-no-files-found: error
+        path: dist
+        retention-days: 5

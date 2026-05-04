@@ -1,0 +1,26 @@
+name: Check Build
+
+on:
+  pull_request:
+    branches: [ main, dev ]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Test tag name (optional)'
+        required: false
+        type: string
+        default: 'test'
+
+permissions:
+  contents: read
+
+jobs:
+  check-build:
+    name: Check Build
+    uses: ./.github/workflows/build.yml
+    with:
+      upload_artifacts: true
+      tag_name: ${{ inputs.tag_name || 'test' }}

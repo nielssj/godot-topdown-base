@@ -2,6 +2,7 @@
 
 # Use GODOT_PATH environment variable if set, otherwise use default path
 GODOT_EXECUTABLE=${GODOT_PATH:-'godot'}
+GAME_NAME=${GAME_NAME:-'godot-topdown-base'}
 
 if [ -z "$RELEASE_VERSION" ]; then
     echo "Warning: RELEASE_VERSION environment variable is not set, using 'dev'"
@@ -29,13 +30,13 @@ if [ $EXPORT_EXIT_CODE -eq 0 ]; then
     
     # Create zip file in dist folder
     cd dist/linux
-    zip -r "../godot-topdown-base-linux.zip" .
+    zip -r "../${GAME_NAME}-linux.zip" .
     cd ../..
     
     # Clean up individual files
     rm -rf dist/linux
     
-    echo "Linux build packaged as godot-topdown-base-linux.zip"
+    echo "Linux build packaged as ${GAME_NAME}-linux.zip"
 else
     echo "Export failed with exit code: $EXPORT_EXIT_CODE"
 fi
