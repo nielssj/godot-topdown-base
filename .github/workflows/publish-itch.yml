@@ -1,0 +1,64 @@
+name: Publish to Itch.io
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Tag name to test with (e.g., v1.0.0)'
+        required: true
+        default: 'v1.0.0-test'
+
+permissions:
+  contents: read
+
+env:
+  BUTLER_VERSION: 15.26.1
+
+jobs:
+  publish-itch:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+    
+    - name: Download release assets
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        # Create dist directory
+        mkdir -p dist
+        
+        # Determine tag name based on trigger type
+        if [ "${{ github.event_name }}" = "release" ]; then
+          TAG_NAME="${{ github.event.release.tag_name }}"
+        else
+          TAG_NAME="${{ github.event.inputs.tag_name }}"
+        fi
+        
+        echo "Using tag: $TAG_NAME"
+        
+        # Download all assets from the release
+        gh release download $TAG_NAME --dir dist
+        
+        # List downloaded files for debugging
+        echo "Downloaded files:"
+        ls -la dist/
+    
+    - name: Install Butler (Itch.io CLI)
+      run: |
+        curl -L -o butler.zip https://broth.itch.zone/butler/linux-amd64/${BUTLER_VERSION}/archive/default
+        unzip butler.zip
+        chmod +x butler
+        sudo mv butler /usr/local/bin/
+    
+    - name: Publish to Itch.io
+      env:
+        BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+        RELEASE_VERSION: ${{ github.event_name == 'release' && github.event.release.tag_name || github.event.inputs.tag_name }}
+      run: |
+        # Make publish script executable
+        chmod +x ./scripts/publish.sh
+        
+        # Run publish script
+        ./scripts/publish.sh
