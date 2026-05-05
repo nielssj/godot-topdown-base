@@ -14,6 +14,9 @@ permissions:
   contents: write
   pull-requests: read
 
+env:
+  GAME_NAME: godot-topdown-base
+
 jobs:
   draft-release:
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
@@ -85,7 +88,7 @@ jobs:
         RELEASE_ID=${{ needs.draft-release.outputs.release_id }}
         
         # Delete Linux asset if it exists
-        LINUX_ASSET_NAME="shop-simulator-linux-${{ needs.draft-release.outputs.tag_name }}.zip"
+        LINUX_ASSET_NAME="${GAME_NAME}-linux-${{ needs.draft-release.outputs.tag_name }}.zip"
         LINUX_ASSET_ID=$(gh api "repos/${{ github.repository }}/releases/$RELEASE_ID/assets" --jq ".[] | select(.name == \"$LINUX_ASSET_NAME\") | .id")
         if [ -n "$LINUX_ASSET_ID" ]; then
           echo "Deleting existing Linux asset with ID: $LINUX_ASSET_ID"
@@ -93,7 +96,7 @@ jobs:
         fi
         
         # Delete Windows asset if it exists
-        WINDOWS_ASSET_NAME="shop-simulator-windows-${{ needs.draft-release.outputs.tag_name }}.zip"
+        WINDOWS_ASSET_NAME="${GAME_NAME}-windows-${{ needs.draft-release.outputs.tag_name }}.zip"
         WINDOWS_ASSET_ID=$(gh api "repos/${{ github.repository }}/releases/$RELEASE_ID/assets" --jq ".[] | select(.name == \"$WINDOWS_ASSET_NAME\") | .id")
         if [ -n "$WINDOWS_ASSET_ID" ]; then
           echo "Deleting existing Windows asset with ID: $WINDOWS_ASSET_ID"
@@ -107,7 +110,7 @@ jobs:
       with:
         upload_url: ${{ needs.draft-release.outputs.upload_url }}
         asset_path: ${{ needs.build-artifacts.outputs.linux_artifact_path }}
-        asset_name: shop-simulator-linux-${{ needs.draft-release.outputs.tag_name }}.zip
+        asset_name: ${{ env.GAME_NAME }}-linux-${{ needs.draft-release.outputs.tag_name }}.zip
         asset_content_type: application/zip
     
     - name: Upload Windows Build
@@ -117,5 +120,5 @@ jobs:
       with:
         upload_url: ${{ needs.draft-release.outputs.upload_url }}
         asset_path: ${{ needs.build-artifacts.outputs.windows_artifact_path }}
-        asset_name: shop-simulator-windows-${{ needs.draft-release.outputs.tag_name }}.zip
+        asset_name: ${{ env.GAME_NAME }}-windows-${{ needs.draft-release.outputs.tag_name }}.zip
         asset_content_type: application/zip
