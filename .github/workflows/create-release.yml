@@ -1,0 +1,121 @@
+name: Create Release
+
+on:
+  workflow_run:
+    workflows: ["Run Tests"]
+    branches: [ main ]
+    types:
+      - completed
+  
+  # Manual trigger for releases
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  draft-release:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.draft_release.outputs.upload_url }}
+      release_id: ${{ steps.draft_release.outputs.id }}
+      tag_name: ${{ steps.draft_release.outputs.tag_name }}
+    steps:
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      with:
+        fetch-depth: 0
+        fetch-tags: true
+    
+    - name: Draft Release
+      id: draft_release
+      uses: release-drafter/release-drafter@563bf132657a13ded0b01fcb723c5a58cdd824e2 # v7.2.1
+      with:
+        # Target main branch for releases
+        commitish: main
+        # Disable publishing require manual step to publish
+        publish: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Debug Release Info
+      run: |
+        echo "Release URL: ${{ steps.draft_release.outputs.upload_url }}"
+        echo "Release ID: ${{ steps.draft_release.outputs.id }}"
+        echo "Tag Name: ${{ steps.draft_release.outputs.tag_name }}"
+
+  build-artifacts:
+    needs: draft-release
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    uses: ./.github/workflows/build.yml
+    with:
+      upload_artifacts: true
+      tag_name: ${{ needs.draft-release.outputs.tag_name }}
+
+  upload-release-assets:
+    needs: [draft-release, build-artifacts]
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+    
+    - name: Download build artifacts
+      uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+      with:
+        name: godot-builds
+        path: dist
+    
+    - name: Debug - List downloaded files
+      run: |
+        echo "Current directory contents:"
+        ls -la
+        echo "Looking for dist directory:"
+        find . -name "dist" -type d
+        echo "All files in current directory tree:"
+        find . -type f
+        echo "Build artifacts outputs:"
+        echo "Linux: ${{ needs.build-artifacts.outputs.linux_artifact_path }}"
+        echo "Windows: ${{ needs.build-artifacts.outputs.windows_artifact_path }}"
+    
+    - name: Delete existing assets if present
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        RELEASE_ID=${{ needs.draft-release.outputs.release_id }}
+        
+        # Delete Linux asset if it exists
+        LINUX_ASSET_NAME="shop-simulator-linux-${{ needs.draft-release.outputs.tag_name }}.zip"
+        LINUX_ASSET_ID=$(gh api "repos/${{ github.repository }}/releases/$RELEASE_ID/assets" --jq ".[] | select(.name == \"$LINUX_ASSET_NAME\") | .id")
+        if [ -n "$LINUX_ASSET_ID" ]; then
+          echo "Deleting existing Linux asset with ID: $LINUX_ASSET_ID"
+          gh api -X DELETE "repos/${{ github.repository }}/releases/assets/$LINUX_ASSET_ID"
+        fi
+        
+        # Delete Windows asset if it exists
+        WINDOWS_ASSET_NAME="shop-simulator-windows-${{ needs.draft-release.outputs.tag_name }}.zip"
+        WINDOWS_ASSET_ID=$(gh api "repos/${{ github.repository }}/releases/$RELEASE_ID/assets" --jq ".[] | select(.name == \"$WINDOWS_ASSET_NAME\") | .id")
+        if [ -n "$WINDOWS_ASSET_ID" ]; then
+          echo "Deleting existing Windows asset with ID: $WINDOWS_ASSET_ID"
+          gh api -X DELETE "repos/${{ github.repository }}/releases/assets/$WINDOWS_ASSET_ID"
+        fi
+    
+    - name: Upload Linux Build
+      uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5 # v1.0.2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.draft-release.outputs.upload_url }}
+        asset_path: ${{ needs.build-artifacts.outputs.linux_artifact_path }}
+        asset_name: shop-simulator-linux-${{ needs.draft-release.outputs.tag_name }}.zip
+        asset_content_type: application/zip
+    
+    - name: Upload Windows Build
+      uses: actions/upload-release-asset@e8f9f06c4b078e705bd2ea027f0926603fc9b4d5 # v1.0.2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ needs.draft-release.outputs.upload_url }}
+        asset_path: ${{ needs.build-artifacts.outputs.windows_artifact_path }}
+        asset_name: shop-simulator-windows-${{ needs.draft-release.outputs.tag_name }}.zip
+        asset_content_type: application/zip
