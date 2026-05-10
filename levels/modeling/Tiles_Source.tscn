@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://d4fu061b2fnkc"]
 
-[ext_resource type="PackedScene" uid="uid://7bjroesjqdui" path="res://levels/Level_Tiles.glb" id="1_5uygh"]
+[ext_resource type="PackedScene" uid="uid://i5en25nnuade" path="res://levels/modeling/Level_Tiles.glb" id="1_5uygh"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_hhr8s"]
 size = Vector3(2, 0.2, 2)
@@ -8,15 +8,58 @@ size = Vector3(2, 0.2, 2)
 [sub_resource type="BoxShape3D" id="BoxShape3D_x7e7t"]
 size = Vector3(2, 1, 1)
 
+[sub_resource type="NavigationMesh" id="NavigationMesh_7qc2f"]
+vertices = PackedVector3Array(-1, 0.5, -1, -1, 0.5, -0.5, 1, 0.5, -0.5, 1, 0.5, -1, -1, 0.5, 0.5, -1, 0.5, 1, 1, 0.5, 1, 1, 0.5, 0.5)
+polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1), PackedInt32Array(7, 6, 4), PackedInt32Array(4, 6, 5)]
+geometry_parsed_geometry_type = 0
+cell_size = 0.05
+agent_height = 0.5
+agent_radius = 0.0
+agent_max_climb = 0.1
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_7qc2f"]
+size = Vector2(2, 0.5)
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_5uygh"]
 size = Vector3(1.5, 1, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_6yrx4"]
 size = Vector3(1, 1, 0.5)
 
+[sub_resource type="NavigationMesh" id="NavigationMesh_p2d33"]
+vertices = PackedVector3Array(-1, 0.5, -1, -1, 0.5, -0.5, 0.5, 0.5, -0.5, 1, 0.5, -1, 1, 0.5, 1, 0.5, 0.5, 1, -1, 0.5, 0.5, -1, 0.5, 1, -0.5, 0.5, 1, -0.5, 0.5, 0.5)
+polygons = [PackedInt32Array(1, 0, 2), PackedInt32Array(2, 0, 3), PackedInt32Array(5, 2, 4), PackedInt32Array(4, 2, 3), PackedInt32Array(9, 8, 6), PackedInt32Array(6, 8, 7)]
+geometry_parsed_geometry_type = 0
+cell_size = 0.05
+agent_height = 0.5
+agent_radius = 0.0
+agent_max_climb = 0.1
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_wsict"]
+size = Vector2(0.5, 0.5)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_p2d33"]
+size = Vector2(0.5, 2)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_wj01c"]
+size = Vector2(1.5, 0.5)
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_wsict"]
+vertices = PackedVector3Array(-1, 0.5, -1, -1, 0.5, 1, 1, 0.5, 1, 1, 0.5, -1)
+polygons = [PackedInt32Array(3, 2, 0), PackedInt32Array(0, 2, 1)]
+geometry_parsed_geometry_type = 0
+cell_size = 0.05
+agent_height = 0.5
+agent_radius = 0.0
+agent_max_climb = 0.1
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_f7ehj"]
+
 [node name="Tiles" unique_id=1696972069 instance=ExtResource("1_5uygh")]
 
-[node name="StaticBody3D" type="StaticBody3D" parent="WallStraight" parent_id_path=PackedInt32Array(1849181142) index="0" unique_id=307687657]
+[node name="WallStraight" parent="." index="0" unique_id=1258388388 groups=["navigation_mesh_source_group"]]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="WallStraight" index="0" unique_id=307687657]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="WallStraight/StaticBody3D" index="0" unique_id=1944201189]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
@@ -26,7 +69,20 @@ shape = SubResource("BoxShape3D_hhr8s")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 shape = SubResource("BoxShape3D_x7e7t")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Corner" parent_id_path=PackedInt32Array(1272115172) index="0" unique_id=866737118]
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="WallStraight" index="1" unique_id=1488822301]
+navigation_mesh = SubResource("NavigationMesh_7qc2f")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="WallStraight/NavigationRegion3D" index="0" unique_id=1596308159]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.75)
+visible = false
+mesh = SubResource("PlaneMesh_7qc2f")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="WallStraight/NavigationRegion3D" index="1" unique_id=402510779]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.75)
+visible = false
+mesh = SubResource("PlaneMesh_7qc2f")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Corner" parent_id_path=PackedInt32Array(659533278) index="0" unique_id=866737118]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Corner/StaticBody3D" index="0" unique_id=2029957442]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
@@ -40,8 +96,33 @@ shape = SubResource("BoxShape3D_5uygh")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0.75)
 shape = SubResource("BoxShape3D_6yrx4")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="Floor" parent_id_path=PackedInt32Array(98411778) index="0" unique_id=79709908]
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="Corner" parent_id_path=PackedInt32Array(659533278) index="1" unique_id=785146456]
+navigation_mesh = SubResource("NavigationMesh_p2d33")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Corner/NavigationRegion3D" index="0" unique_id=2077550264]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.75, 0, 0.75)
+visible = false
+mesh = SubResource("PlaneMesh_wsict")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Corner/NavigationRegion3D" index="1" unique_id=1067545393]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0, 0)
+visible = false
+mesh = SubResource("PlaneMesh_p2d33")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Corner/NavigationRegion3D" index="2" unique_id=1934631427]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.25, 0, -0.75)
+visible = false
+mesh = SubResource("PlaneMesh_wj01c")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Floor" parent_id_path=PackedInt32Array(1859521636) index="0" unique_id=79709908]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Floor/StaticBody3D" index="0" unique_id=1121567268]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
 shape = SubResource("BoxShape3D_hhr8s")
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="Floor" parent_id_path=PackedInt32Array(1859521636) index="1" unique_id=1700647749]
+navigation_mesh = SubResource("NavigationMesh_wsict")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor/NavigationRegion3D" index="0" unique_id=996901035]
+visible = false
+mesh = SubResource("PlaneMesh_f7ehj")
