@@ -15,10 +15,10 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="godot-topdown-base"
+config/version="0.0.1"
 run/main_scene="uid://cv6d4b8kdf7ai"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
-config/version="0.0.1"
 
 [editor_plugins]
 
