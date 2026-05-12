@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://cv6d4b8kdf7ai"]
 
+[ext_resource type="PackedScene" uid="uid://cjtt0yoyafi6y" path="res://levels/level_2.tscn" id="1_7mycd"]
 [ext_resource type="PackedScene" uid="uid://by7ldkuod88y8" path="res://levels/level_1.tscn" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://bldrnvf6vxgv4" path="res://entities/characters/Player.tscn" id="2_0xm2m"]
 [ext_resource type="PackedScene" uid="uid://c3sx6pjjffgd" path="res://entities/characters/NPC.tscn" id="3_1bvp3"]
@@ -33,6 +34,9 @@ environment = SubResource("Environment_h2yge")
 transform = Transform3D(-4.371139e-08, -0.86602545, 0.49999994, 0, 0.49999994, 0.86602545, -1, 3.7855173e-08, -2.1855692e-08, 2.7023256, 5.0321217, -0.068)
 
 [node name="Level1" parent="." unique_id=379026618 instance=ExtResource("1_ig7tw")]
+visible = false
+
+[node name="Level2" parent="." unique_id=2088085139 instance=ExtResource("1_7mycd")]
 
 [node name="Player" parent="." unique_id=99034440 instance=ExtResource("2_0xm2m")]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, -2, 0, 2)

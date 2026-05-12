@@ -4,3 +4,6 @@
 
 # Build output
 dist/
+
+# Blender backup files
+*.blend1
