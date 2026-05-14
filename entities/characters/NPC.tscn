@@ -14,8 +14,8 @@ material = SubResource("StandardMaterial3D_0xm2m")
 size = Vector3(0.5, 0.4, 0.75)
 
 [sub_resource type="Resource" id="Resource_j66pq"]
-script = ExtResource("3_bpwkg")
 resource_local_to_scene = true
+script = ExtResource("3_bpwkg")
 metadata/_custom_type_script = "uid://dfag02jyrk440"
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4sekt"]
@@ -92,6 +92,10 @@ shape = SubResource("BoxShape3D_4sekt")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="VisionArea" unique_id=1973468671]
 shape = SubResource("SphereShape3D_7hsy1")
 
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=1234567890]
+path_desired_distance = 0.5
+target_desired_distance = 0.5
+
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1412848476]
 libraries/ = SubResource("AnimationLibrary_1cyf0")
 libraries/NPCAnimations = ExtResource("4_j66pq")
@@ -99,3 +103,6 @@ libraries/NPCAnimations = ExtResource("4_j66pq")
 [connection signal="damage_taken" from="." to="." method="_on_damage_taken"]
 [connection signal="died" from="." to="." method="_on_died"]
 [connection signal="body_entered" from="VisionArea" to="." method="_on_vision_area_body_entered"]
+[connection signal="navigation_finished" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_navigation_finished"]
+[connection signal="path_changed" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_path_changed"]
+[connection signal="target_reached" from="NavigationAgent3D" to="." method="_on_navigation_agent_3d_target_reached"]

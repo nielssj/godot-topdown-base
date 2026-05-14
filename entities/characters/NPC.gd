@@ -18,6 +18,7 @@ enum State {
 @onready var weapon: Weapon = get_node_or_null("Model/Weapon")
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var collision_shape: CollisionShape3D = $CollisionShape3D
+@onready var nav_agent: NavigationAgent3D = $NavigationAgent3D
 
 # The node the NPC is currently pursuing
 var target: Node3D = null
@@ -30,7 +31,7 @@ var state: State = State.IDLE:
 				State.IDLE:
 					pass
 				State.CHASING:
-					pass
+					_exit_chasing()
 				State.ATTACKING:
 					_exit_attacking()
 		# Assign new state
@@ -67,7 +68,12 @@ func _enter_idle() -> void:
 	pass
 
 func _enter_chasing() -> void:
-	pass
+	if target == null:
+		return
+	nav_agent.target_position = target.global_position
+
+func _exit_chasing() -> void:
+	nav_agent.target_position = Vector3.ZERO
 
 func _enter_attacking() -> void:
 	velocity = Vector3.ZERO
@@ -86,17 +92,28 @@ func _enter_dead() -> void:
 	animation_player.play("NPCAnimations/Death")
 
 func _tick_chasing() -> void:
-	# Vector from NPC to target, flattened to the horizontal plane
-	var to_target := target.global_position - global_position
-	to_target.y = 0.0
-	var direction := to_target.normalized()
-	# Turn NPC model towards target
-	model.look_at(global_position + direction, Vector3.UP)
-	# Move
-	velocity = direction * speed
-	move_and_slide()
+	if target == null:
+		return
+
+	var target_pos := target.global_position
+	nav_agent.target_position = target_pos
+	
+	# Direct distance for the attack-range gate (not nav distance)
+	var to_target := target_pos - global_position
 	if to_target.length() <= attack_range:
 		state = State.ATTACKING
+		return
+	
+	# Turn model towards current target
+	model.look_at(global_position + to_target.normalized(), Vector3.UP)
+
+	# Follow nav path; fall back to direct movement when no valid waypoint
+	var next_pos = nav_agent.get_next_path_position()
+	var to_next = next_pos - global_position
+	to_next.y = 0.0
+	var direction = to_next.normalized() if to_next.length() >= 0.1 else to_target.normalized()
+	velocity = direction * speed
+	move_and_slide()
 
 func _tick_attacking() -> void:
 	var to_target := target.global_position - global_position
