@@ -164,3 +164,47 @@ func test_damage_taken_with_null_source_stays_idle():
 
 	assert_eq(npc.state, NPC.State.IDLE, "NPC should not start chasing when damage source is null")
 	assert_null(npc.target, "Target should remain null when damage source is null")
+
+
+func test_enter_chasing_sets_nav_agent_target_position():
+	var fake_player := Node3D.new()
+	add_child_autofree(fake_player)
+	fake_player.global_position = Vector3(5.0, 0.0, 0.0)
+	npc.target = fake_player
+
+	npc.state = NPC.State.CHASING
+
+	assert_eq(npc.nav_agent.target_position, fake_player.global_position,
+		"Entering CHASING should set nav_agent.target_position so path calculation starts immediately")
+
+
+func test_tick_chasing_velocity_points_toward_target_when_no_nav_path():
+	# NPC placed off-origin. Without a baked NavigationRegion3D the NavigationAgent3D
+	# returns Vector3.ZERO from get_next_path_position(). That produces a to_next
+	# vector whose length is >= 0.1 (so the direct-movement fallback never fires),
+	# pointing toward the origin rather than the target — the root cause of the
+	# "NPC stands still and flickers" bug.
+	npc.global_position = Vector3(10.0, 0.0, 0.0)
+	var fake_player := Node3D.new()
+	add_child_autofree(fake_player)
+	fake_player.global_position = Vector3(14.0, 0.0, 0.0)  # target is further right, beyond attack_range
+	npc.target = fake_player
+	npc.state = NPC.State.CHASING
+
+	npc._tick_chasing()
+
+	assert_gt(npc.velocity.x, 0.0,
+		"Velocity must point toward the target (positive X); if nav_agent returns Vector3.ZERO the NPC incorrectly chases the origin instead")
+
+
+func test_tick_chasing_sets_nonzero_velocity_when_target_is_distant():
+	var fake_player := Node3D.new()
+	add_child_autofree(fake_player)
+	fake_player.global_position = Vector3(5.0, 0.0, 0.0)
+	npc.target = fake_player
+	npc.state = NPC.State.CHASING
+
+	npc._tick_chasing()
+
+	assert_ne(npc.velocity, Vector3.ZERO,
+		"NPC should have non-zero velocity when chasing a target well beyond attack range")
