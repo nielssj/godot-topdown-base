@@ -111,7 +111,11 @@ func _tick_chasing() -> void:
 	var next_pos = nav_agent.get_next_path_position()
 	var to_next = next_pos - global_position
 	to_next.y = 0.0
-	var direction = to_next.normalized() if to_next.length() >= 0.1 else to_target.normalized()
+	var direction = to_next.normalized()
+
+	if to_next.length() < 0.1:
+		direction = to_target.normalized() #  falling back to straight-line movement when no nav path is available
+
 	velocity = direction * speed
 	move_and_slide()
 
