@@ -16,7 +16,7 @@ func _physics_process(delta):
 	# Handle movement input only if control is enabled
 	if enable_control:
 		# Two-axis input (supporting both WASD and controller joystick)
-		var input_vector = Input.get_vector("move_forward", "move_back", "move_right", "move_left")
+		var input_vector = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
 		var direction = Vector3(input_vector.x, 0, input_vector.y)
 
 		# Calculate effective speed based on what we're carrying
