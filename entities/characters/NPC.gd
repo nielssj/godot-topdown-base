@@ -110,7 +110,6 @@ func _tick_chasing() -> void:
 	# Follow nav path; fall back to direct movement when no valid waypoint
 	var next_pos = nav_agent.get_next_path_position()
 	var to_next = next_pos - global_position
-	to_next.y = 0.0
 	var direction = to_next.normalized()
 
 	if to_next.length() < 0.1:
@@ -121,7 +120,6 @@ func _tick_chasing() -> void:
 
 func _tick_attacking() -> void:
 	var to_target := target.global_position - global_position
-	to_target.y = 0.0
 	var direction := to_target.normalized()
 	model.look_at(global_position + direction, Vector3.UP)
 	velocity = Vector3.ZERO
